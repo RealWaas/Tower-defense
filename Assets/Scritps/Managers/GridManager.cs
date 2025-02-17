@@ -13,9 +13,9 @@ public static class GridManager
         OnGridGenerationRequest?.Invoke();
     }
 
-    public static void SetGridPath(List<Vector2Int> _pathPoints)
+    public static void SetGridPath(List<Vector2Int> _pathPoints, float _cellSize)
     {
-        foreach (var point in _pathPoints)
-            mainPath.Add(new Vector3(point.x, 0, point.y));
+        foreach (Vector2Int point in _pathPoints)
+            mainPath.Add(new Vector3(point.x * _cellSize, 0, point.y * _cellSize));
     }
 }

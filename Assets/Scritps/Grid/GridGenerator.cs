@@ -12,6 +12,8 @@ public class GridGenerator : MonoBehaviour
     [SerializeField] private GameObject pathPrefab;
     [SerializeField] private GameObject floorPrefab;
 
+    [SerializeField] private GameObject mainBasePrefab;
+
     int generationCount = 0;
 
     private List<Vector2Int> invalidCells = new List<Vector2Int>();
@@ -232,7 +234,10 @@ public class GridGenerator : MonoBehaviour
             safety++;
         }
 
-        GridManager.SetGridPath(mainPath);
+        // Insert the enemy spawn point at the begining of list
+        mainPath.Insert(0, new Vector2Int (mainPath[0].x -1, mainPath[0].y));
+
+        GridManager.SetGridPath(mainPath, cellSize);
 
         StartCoroutine(GenerateVisualCoroutine());
     }
@@ -242,7 +247,8 @@ public class GridGenerator : MonoBehaviour
         foreach (Vector2Int cell in mainPath)
         {
             GameObject goPath = Instantiate(pathPrefab, transform);
-            goPath.transform.position = new Vector3((cell.x - gridSize.x / cellSize) * cellSize, 2, (cell.y - gridSize.y / cellSize) * cellSize);
+            //goPath.transform.position = new Vector3((cell.x - gridSize.x / cellSize) * cellSize, 2, (cell.y - gridSize.y / cellSize) * cellSize);
+            goPath.transform.position = new Vector3(cell.x * cellSize, 0, cell.y * cellSize);
 
             yield return new WaitForSeconds(0.1f);
         }
@@ -254,10 +260,16 @@ public class GridGenerator : MonoBehaviour
                 if (mainPath.Contains(new Vector2Int(xIndex, yIndex))) continue;
 
                 GameObject goFloor = Instantiate(floorPrefab, transform);
-                goFloor.transform.position = new Vector3((xIndex - gridSize.x / cellSize) * cellSize, 2, (yIndex - gridSize.y / cellSize) * cellSize);
+                //goFloor.transform.position = new Vector3((xIndex - gridSize.x / cellSize) * cellSize, 2, (yIndex - gridSize.y / cellSize) * cellSize);
+                goFloor.transform.position = new Vector3(xIndex * cellSize, 0, yIndex * cellSize);
 
             }
             yield return new WaitForSeconds(0.1f);
         }
+
+        GameObject mainbase = Instantiate(mainBasePrefab, transform);
+        mainbase.transform.position = new Vector3(mainPath.Last().x * cellSize, 0, mainPath.Last().y * cellSize);
+
+        GameManager.WaveEnd();
     }
 }
