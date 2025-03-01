@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static GridManager;
 
 public class GridGenerator : MonoBehaviour
 {
-    [SerializeField] private Vector2Int gridSize; 
-    [SerializeField] private float cellSize;
+    [SerializeField] private Vector2Int gridSize;
 
     [SerializeField] private int minPathCount = 30;
     [SerializeField] private GameObject pathPrefab;
@@ -34,15 +34,15 @@ public class GridGenerator : MonoBehaviour
     private void Awake()
     {
         GridManager.OnGridGenerationRequest += GenerateGrid;
+        GridManager.OnGridVisualRequest += GenerateVisual;
     }
 
     private void OnDestroy()
     {
         GridManager.OnGridGenerationRequest -= GenerateGrid;
+        GridManager.OnGridVisualRequest -= GenerateVisual;
     }
 
-
-    [ContextMenu("GeneratePath")]
     public void GenerateGrid()
     {
         generationCount = 0;
@@ -172,13 +172,13 @@ public class GridGenerator : MonoBehaviour
                     break;
             }
 
-            if (safety >= 100)
+            if (safety >= 150)
             {
-                Debug.LogError("Safety got triggered");
+                Debug.Log("Safety got triggered");
                 TryGenerateGrid();
             }
 
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.005f);
 
             
             Vector2Int lastPathPoint = mainPath.Last();
@@ -237,38 +237,58 @@ public class GridGenerator : MonoBehaviour
         // Insert the enemy spawn point at the begining of list
         mainPath.Insert(0, new Vector2Int (mainPath[0].x -1, mainPath[0].y));
 
-        GridManager.SetGridPath(mainPath, cellSize);
+        GridManager.SetGridPath(mainPath);
+    }
 
+    private void GenerateVisual()
+    {
         StartCoroutine(GenerateVisualCoroutine());
     }
 
     private IEnumerator GenerateVisualCoroutine()
     {
-        foreach (Vector2Int cell in mainPath)
+        List<Vector2Int> finalPath = GridManager.mainPath;
+
+        foreach (Vector2Int cell in finalPath)
         {
             GameObject goPath = Instantiate(pathPrefab, transform);
             //goPath.transform.position = new Vector3((cell.x - gridSize.x / cellSize) * cellSize, 2, (cell.y - gridSize.y / cellSize) * cellSize);
-            goPath.transform.position = new Vector3(cell.x * cellSize, 0, cell.y * cellSize);
+            goPath.transform.position = new Vector3(cell.x * CELL_SIZE, 0, cell.y * CELL_SIZE);
 
             yield return new WaitForSeconds(0.1f);
         }
 
+        List<TurretPlacer> placerList = new List<TurretPlacer>();
         for (int xIndex = 0; xIndex < gridSize.x; xIndex++)
         {
             for (int yIndex = 0; yIndex < gridSize.y; yIndex++)
             {
-                if (mainPath.Contains(new Vector2Int(xIndex, yIndex))) continue;
+                if (finalPath.Contains(new Vector2Int(xIndex, yIndex))) continue;
 
                 GameObject goFloor = Instantiate(floorPrefab, transform);
-                //goFloor.transform.position = new Vector3((xIndex - gridSize.x / cellSize) * cellSize, 2, (yIndex - gridSize.y / cellSize) * cellSize);
-                goFloor.transform.position = new Vector3(xIndex * cellSize, 0, yIndex * cellSize);
-
+                goFloor.transform.position = new Vector3(xIndex * CELL_SIZE, 0, yIndex * CELL_SIZE);
+                
+                TurretPlacer placer = goFloor.GetComponent<TurretPlacer>();
+                placer.SetPosition(new Vector2Int(xIndex, yIndex));
+                placerList.Add(placer);
             }
             yield return new WaitForSeconds(0.1f);
         }
+        SetHolderList(placerList);
+
+        foreach(TurretPlacer placer in placerList)
+        {
+            foreach(var turret in PlacementManager.instance.placedTurretList)
+            {
+                if (placer.placerPosition == turret.turretPos)
+                {
+                    placer.SetTurret();
+                }
+            }
+        }
 
         GameObject mainbase = Instantiate(mainBasePrefab, transform);
-        mainbase.transform.position = new Vector3(mainPath.Last().x * cellSize, 0, mainPath.Last().y * cellSize);
+        mainbase.transform.position = new Vector3(finalPath.Last().x * CELL_SIZE, 0, finalPath.Last().y * CELL_SIZE);
 
         GameManager.WaveEnd();
     }

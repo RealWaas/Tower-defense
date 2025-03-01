@@ -20,12 +20,16 @@ public class HealthSystem : MonoBehaviour, IDamagable
         }
     }
 
-    //public int damagaReduction;
+    [SerializeField] private ParticleSystem lowHealthEffect;
 
-    public void SetMaxHealt(float _maxHealth, float _healthModifier)
+    public void SetHealth(float _health)
     {
-        maxHealth = _maxHealth * _healthModifier;
-        health *= _healthModifier;
+        if(_health == 0)
+        {
+            health = maxHealth;
+            return;
+        }
+        health = _health;
     }
     public void ResetHealth(float _maxHealth)
     {
@@ -45,7 +49,14 @@ public class HealthSystem : MonoBehaviour, IDamagable
 
         health -= _damage;
 
+        if (health < maxHealth / 2)
+            lowHealthEffect.Play();
+
         if (health <= 0)
+        {
+            isVulnerable = false;
+            lowHealthEffect.Stop();
             OnHealthEmpty?.Invoke();
+        }
     }
 }

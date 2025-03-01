@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 588171293426174354}
-  m_Layer: 0
+  - component: {fileID: 8603087866783993220}
+  - component: {fileID: 4968993253412675418}
+  m_Layer: 6
   m_Name: FloorBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32,6 +34,39 @@ Transform:
   - {fileID: 4596847993349858775}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8603087866783993220
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670888781716616715}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.5, y: 0.21663311, z: 2.5000002}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4968993253412675418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670888781716616715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93ea132102fb17438c186c947671d43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5015497451959964109
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,7 +78,6 @@ GameObject:
   - component: {fileID: 4596847993349858775}
   - component: {fileID: 152286444474422017}
   - component: {fileID: 497827959469430195}
-  - component: {fileID: 5846875043406319009}
   - component: {fileID: 8203256452862608703}
   m_Layer: 0
   m_Name: Visual
@@ -120,27 +154,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5846875043406319009
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5015497451959964109}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 2.5, y: 0.21663311, z: 2.5000002}
-  m_Center: {x: -1.25, y: -0.098492846, z: 1.2499999}
 --- !u!95 &8203256452862608703
 Animator:
   serializedVersion: 7

@@ -1,11 +1,23 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_MainMenu : MonoBehaviour
 {
     public GameObject playMenu;
     public GameObject quitMenu;
+    public Button continueButton;
+
+    private void OnEnable()
+    {
+        // Check if there is a file to be continued
+        if(!DataManager.HasSaveFile())
+            continueButton.interactable = false;
+        else
+            continueButton.interactable = true;
+    }
 
     public void StartGame() => GameManager.InitGame();
+    public void ContinueGame() => GameManager.LoadGame();
 
     public void OnPlayClicked()
     {
@@ -26,13 +38,5 @@ public class UI_MainMenu : MonoBehaviour
     public void DisablePlayMenu() => playMenu.SetActive(false);
     public void DisableQuitMenu() => quitMenu.SetActive(false);
 
-
-    public void QuitGame()
-    {
-    #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-    #else
-				    Application.Quit();
-    #endif
-    }
+    public void QuitGame() => GameManager.QuitGame();
 }

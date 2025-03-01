@@ -1,21 +1,28 @@
 using UnityEngine;
+using static GridManager;
 
+[RequireComponent(typeof(HealthSystem))]
 public class EnemyBehaviour : MonoBehaviour
 {
+    private HealthSystem healthSystem;
+
+    [SerializeField] private GameObject deathEffect;
     public int indexOnPath { get; private set; } = 0;
     [SerializeField] private float moveSpeed = 2;
 
-    [ContextMenu("Init")]
-    private void InitializeEnemy()
+    private void Awake()
     {
-        indexOnPath = 0;
+        healthSystem = GetComponent<HealthSystem>();
+        healthSystem.OnHealthEmpty += HandleDeath;
+
+        healthSystem.ResetHealth(10);
     }
 
     private void Update()
     {
-        Vector3 targetDir = GridManager.mainPath[indexOnPath] - transform.position;
+        Vector3 targetDir = GetRelativePoint(mainPath[indexOnPath]) - transform.position;
 
-        if(targetDir.magnitude <= 0.1f) 
+        if (targetDir.magnitude <= 0.1f)
             OnTargetReached();
 
         transform.position += targetDir.normalized * Time.deltaTime * moveSpeed;
@@ -23,12 +30,21 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void OnTargetReached()
     {
-        if(indexOnPath +1 >=  GridManager.mainPath.Count)
+        if(indexOnPath +1 >=  mainPath.Count)
         {
-            SpawnManager.instance.OnEnemyDeath();
-            Destroy(gameObject);
+            HandleDeath();
         }
         else
             indexOnPath ++;
+    }
+
+    private void HandleDeath()
+    {
+        WaveManager.instance.OnEnemyDeath();
+
+        GameObject effect = PoolManager.GetAvailableObjectFromPool(deathEffect);
+        effect.transform.position = transform.position;
+
+        gameObject.SetActive(false);
     }
 }
