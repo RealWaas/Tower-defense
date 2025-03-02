@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3067201808951670744
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6453838982930913707}
+  m_Layer: 0
+  m_Name: Canon
+  m_TagString: Untagged
+  m_Icon: {fileID: 7422848464349959988, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6453838982930913707
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3067201808951670744}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 1.048, z: 2.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1614518996435623108}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4404447142603682173
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,9 +62,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.74999994, y: 0.74999994, z: 0.74999994}
+  m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 6453838982930913707}
+  - {fileID: 377724791041758399}
   - {fileID: 7606000999833068118}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -107,8 +140,9 @@ MonoBehaviour:
   - {fileID: 4608361959968814899}
   - {fileID: 6120452704804038453}
   - {fileID: 2676394161436191251}
-  baseMaterial: {fileID: 2100000, guid: fbddef8f15af5c94a887cbca6a2cf593, type: 2}
-  visualizerMaterial: {fileID: 2100000, guid: 4cee7a5983b187943adc589b9cb1f084, type: 2}
+  baseMaterial: {fileID: 2100000, guid: 4cee7a5983b187943adc589b9cb1f084, type: 2}
+  placementMaterial: {fileID: 2100000, guid: fbddef8f15af5c94a887cbca6a2cf593, type: 2}
+  selectionMaterial: {fileID: 2100000, guid: faaa1d83990c21d47878307395a11694, type: 2}
 --- !u!135 &8082726800419299960
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -128,7 +162,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 5
+  m_Radius: 6.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &305802970704078139
 MonoBehaviour:
@@ -143,7 +177,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyInRange: []
+  canonList:
+  - {fileID: 6453838982930913707}
+  - {fileID: 377724791041758399}
   projectilePrefab: {fileID: 0}
+--- !u!1 &4758441401716510608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 377724791041758399}
+  m_Layer: 0
+  m_Name: Canon (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7422848464349959988, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &377724791041758399
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4758441401716510608}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.505, y: 1.048, z: 2.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1614518996435623108}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4804858107252731247
 GameObject:
   m_ObjectHideFlags: 0

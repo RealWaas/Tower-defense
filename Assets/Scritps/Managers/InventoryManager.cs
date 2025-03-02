@@ -13,5 +13,10 @@ public static class InventoryManager
         availableTurrets.Add(_turret);
     }
 
+    public static void LoadTurretList(List<TurretType> _turretTypes)
+    {
+        availableTurrets = _turretTypes;
+    }
+
     public static void ResetInventory() => availableTurrets.Clear();
 }

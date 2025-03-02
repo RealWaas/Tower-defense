@@ -18,13 +18,15 @@ MonoBehaviour:
   - levelDescription: FlameThrower
     turretPrefab: {fileID: 4489708159694537523, guid: 221dd73de492acd458e7d54ca3eeabb3, type: 3}
     projectilePrefab: {fileID: 8400424712307853490, guid: ab306dd71adc43c44a1937195ef59986, type: 3}
+    upgradePrice: 50
     attackSpeed: 0.5
-    bulletDamage: 0.1
+    bulletDamage: 0.5
     bulletSpeed: 1
   - levelDescription: FlameThrower
     turretPrefab: {fileID: 4346624298339843808, guid: 59b4baf8a7ec79f4e95d1c184fe729d4, type: 3}
     projectilePrefab: {fileID: 8400424712307853490, guid: ab306dd71adc43c44a1937195ef59986, type: 3}
-    attackSpeed: 0.5
-    bulletDamage: 0.1
+    upgradePrice: 250
+    attackSpeed: 0.75
+    bulletDamage: 0.75
     bulletSpeed: 1
   turretType: 3

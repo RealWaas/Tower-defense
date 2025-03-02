@@ -21,7 +21,7 @@ public class UI_ItemChoicePanel : MonoBehaviour
     {
         RemoveChoices();
 
-        if (WaveManager.instance.currentWaveIndex % 10 == 0)
+        if (WaveManager.instance.currentWaveIndex % PreparationManager.UNLOCK_WAVES_INDEX == 0)
         {
             InstantiateChoices(ItemDrawer.instance.GetRandomTurrets(MAX_CHOICES));
         }

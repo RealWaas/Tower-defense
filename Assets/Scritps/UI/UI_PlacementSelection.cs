@@ -1,17 +1,20 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_PlacementSelection : MonoBehaviour
 {
     [SerializeField] GameObject placementButtonPrefab;
+    private Button selectionButton;
 
     public void Awake()
     {
+        selectionButton = GetComponent<Button>();
         PreparationManager.OnPreparation += SetPlacementSelection;
     }
 
     public void OnDestroy()
     {
-        PreparationManager.OnPreparation -= SetPlacementSelection;
+        PreparationManager.OnPreparation -= SetPlacementSelection;   
     }
 
     public void SetPlacementSelection()

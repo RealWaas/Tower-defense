@@ -49,5 +49,7 @@ public enum TurretType
     None,
     Normal,
     Rapid,
-    FlameThrower
+    FlameThrower,
+    Canon,
+    SnowBlaster
 }

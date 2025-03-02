@@ -6,7 +6,7 @@ public static class PreparationManager
     public static event Action OnPreparation;
     public static event Action OnItemChoice;
 
-    private const int UNLOCK_WAVES_INDEX = 5;
+    public const int UNLOCK_WAVES_INDEX = 2;
 
     /// <summary>
     /// Set the preparation phase or a new item depending on the number of the wave.
@@ -19,9 +19,12 @@ public static class PreparationManager
         // Give a new upgrade choice every X waves
         if (WaveManager.instance.currentWaveIndex % UNLOCK_WAVES_INDEX == 0)
         {
-            OnItemChoice?.Invoke();
+            if (InventoryManager.availableTurrets.Count <= WaveManager.instance.currentWaveIndex / UNLOCK_WAVES_INDEX && InventoryManager.availableTurrets.Count != 5)
+            {
+                OnItemChoice?.Invoke();
+                return;
+            }
         }
-        else
             OnPreparation?.Invoke();
     }
 

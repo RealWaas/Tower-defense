@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public static class UpgradeManager
 {
@@ -13,14 +12,26 @@ public static class UpgradeManager
 
     public static void SelectTurret(TurretData _selectedTurret)
     {
+        if(isTurretSelected)
+            DeselectTurret();
+
         selectedTurret = _selectedTurret;
 
         isTurretSelected = true;
         OnUpgradeSelected?.Invoke();
+
+        TurretMain turretMain = PlacementManager.instance.GetTurretMain(selectedTurret);
+        turretMain.turretObject.GetChild(0).GetComponent<TurretVisual>().SetSelectionMaterial();
     }
 
     public static void DeselectTurret()
     {
+        if (!isTurretSelected) return;
+
+
+        TurretMain turretMain = PlacementManager.instance.GetTurretMain(selectedTurret);
+        turretMain.turretObject.GetChild(0).GetComponent<TurretVisual>().SetBaseMaterial();
+
         isTurretSelected = false;
         OnUpgradeDeselected?.Invoke();
     }
@@ -37,6 +48,11 @@ public static class UpgradeManager
 
         DeselectTurret();
     }
-    // TODO
-    // Handle the upgrade UI of each turrets
+
+    public static void RemoveTurret()
+    {
+        PlacementManager.instance.RemoveTurret(selectedTurret);
+        isTurretSelected = false;
+        OnUpgradeDeselected?.Invoke();
+    }
 }

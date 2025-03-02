@@ -5,6 +5,7 @@ public class HealthSystem : MonoBehaviour, IDamagable
 {
     public event Action OnHealthUpdated;
     public event Action OnHealthEmpty;
+    public event Action<float> OnSlow;
 
     [SerializeField] protected bool isVulnerable = true;
     public float maxHealth { get; private set; }
@@ -19,6 +20,7 @@ public class HealthSystem : MonoBehaviour, IDamagable
             OnHealthUpdated?.Invoke();
         }
     }
+
 
     [SerializeField] private ParticleSystem lowHealthEffect;
 
@@ -59,4 +61,6 @@ public class HealthSystem : MonoBehaviour, IDamagable
             OnHealthEmpty?.Invoke();
         }
     }
+
+    public void TakeSlow(float _slowSpeed) => OnSlow?.Invoke(_slowSpeed);
 }

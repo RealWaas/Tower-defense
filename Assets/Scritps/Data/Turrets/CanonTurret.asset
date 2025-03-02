@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c90a2b1422b22ad43a1ca5b13cc0a3e5, type: 3}
+  m_Name: CanonTurret
+  m_EditorClassIdentifier: 
+  turretName: Canon Turret
+  turretIcon: {fileID: 21300000, guid: e20aa8671589f494fb5b1f00ecdc2dd4, type: 3}
+  turretStats:
+  - levelDescription: very slow fire rate but heavy damages
+    turretPrefab: {fileID: 3683498205923525940, guid: f4d4c86006a3a634485e4d448fffcf15, type: 3}
+    projectilePrefab: {fileID: 3693013658051865844, guid: e08a5ed92b91e0140b89ff0cb4798ed3, type: 3}
+    upgradePrice: 100
+    attackSpeed: 0.1
+    bulletDamage: 25
+    bulletSpeed: 30
+  - levelDescription: very slow fire rate but heavy damages
+    turretPrefab: {fileID: 4369505550864436807, guid: d515dfcb40519af4ab698f2ac8a12273, type: 3}
+    projectilePrefab: {fileID: 3693013658051865844, guid: e08a5ed92b91e0140b89ff0cb4798ed3, type: 3}
+    upgradePrice: 500
+    attackSpeed: 0.2
+    bulletDamage: 50
+    bulletSpeed: 30
+  turretType: 4

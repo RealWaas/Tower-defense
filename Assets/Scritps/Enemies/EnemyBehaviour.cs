@@ -2,33 +2,83 @@ using UnityEngine;
 using static GridManager;
 
 [RequireComponent(typeof(HealthSystem))]
-public class EnemyBehaviour : MonoBehaviour
+public abstract class EnemyBehaviour : MonoBehaviour
 {
-    private HealthSystem healthSystem;
+    protected HealthSystem healthSystem;
 
-    [SerializeField] private GameObject deathEffect;
-    public int indexOnPath { get; private set; } = 0;
-    [SerializeField] private float moveSpeed = 2;
+    [SerializeField] protected EnemyDataSO enemyData;
 
-    private void Awake()
+    [SerializeField] protected float slowEffect = 1;
+    protected float slowTimer = 0;
+    protected float slowCooldown = 2f;
+
+    [SerializeField] protected GameObject deathEffect;
+    public int indexOnPath { get; protected set; } = 0;
+
+    protected virtual void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
         healthSystem.OnHealthEmpty += HandleDeath;
-
-        healthSystem.ResetHealth(10);
+        healthSystem.OnSlow += TakeSlow;
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        Vector3 targetDir = GetRelativePoint(mainPath[indexOnPath]) - transform.position;
+        healthSystem.OnHealthEmpty -= HandleDeath;
+        healthSystem.OnSlow -= TakeSlow;
+    }
+
+    protected void OnEnable()
+    {
+        InitEnemy();
+    }
+
+    protected virtual void InitEnemy()
+    {
+        healthSystem.ResetHealth(enemyData.enemyHealth * (WaveManager.instance.currentWaveIndex * .2f));
+    }
+
+    protected virtual void Update()
+    {
+        if(enemyData == null)
+            return;
+
+        Vector3 targetPos = GetRelativePoint(mainPath[indexOnPath]);
+        targetPos.y = transform.position.y;
+
+        Vector3 targetDir = targetPos - transform.position;
+
+        RotateToward(targetPos);
+
+        if(slowEffect != 1 && Time.time >= slowTimer)
+        {
+            slowEffect = 1;
+        }
 
         if (targetDir.magnitude <= 0.1f)
             OnTargetReached();
 
-        transform.position += targetDir.normalized * Time.deltaTime * moveSpeed;
+        transform.position += targetDir.normalized * Time.deltaTime * (enemyData.enemySpeed * slowEffect);
+    }
+    protected void RotateToward(Vector3 _targetPos)
+    {
+        _targetPos.y = transform.position.y;
+
+        transform.rotation = Quaternion.LookRotation((_targetPos - transform.position).normalized);
     }
 
-    private void OnTargetReached()
+    protected virtual void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag != this.tag)
+        {
+            if (other.gameObject.TryGetComponent(out IDamagable damagable))
+            {
+                damagable.TakeDamage(enemyData.enemyDamages);
+            }
+        }
+    }
+
+    protected virtual void OnTargetReached()
     {
         if(indexOnPath +1 >=  mainPath.Count)
         {
@@ -38,9 +88,17 @@ public class EnemyBehaviour : MonoBehaviour
             indexOnPath ++;
     }
 
-    private void HandleDeath()
+    protected virtual void TakeSlow(float _slowAmount)
+    {
+        slowEffect = _slowAmount;
+        slowTimer = Time.time + slowCooldown;
+    }
+
+    protected virtual void HandleDeath()
     {
         WaveManager.instance.OnEnemyDeath();
+
+        CurrencyManager.instance.AddMoney(enemyData.enemyMoney);
 
         GameObject effect = PoolManager.GetAvailableObjectFromPool(deathEffect);
         effect.transform.position = transform.position;

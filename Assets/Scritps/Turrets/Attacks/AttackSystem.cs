@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(SphereCollider))]
 public abstract class AttackSystem : MonoBehaviour
@@ -41,7 +42,7 @@ public abstract class AttackSystem : MonoBehaviour
         if (enemyInRange.Count == 0 || !projectilePrefab)
             return;
 
-        EnemyBehaviour currentTarget = enemyInRange[0];
+        EnemyBehaviour currentTarget = enemyInRange.OrderByDescending(e => e.indexOnPath).FirstOrDefault();
 
         if (currentTarget.isActiveAndEnabled == false)
         {
@@ -73,12 +74,4 @@ public abstract class AttackSystem : MonoBehaviour
     }
 
     protected void SetCooldown() => nextAttackTimer = Time.time;
-
-    protected void OnDrawGizmos()
-    {
-        if (!rangeCollider)
-            return;
-
-        Gizmos.DrawWireSphere(transform.position, rangeCollider.radius);
-    }
 }

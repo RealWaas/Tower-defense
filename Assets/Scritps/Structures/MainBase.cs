@@ -44,9 +44,12 @@ public class MainBase : MonoBehaviour
 
     private void HandleDeath()
     {
-        Debug.Log("looser");
+        if (!GameManager.isAlive)
+            return;
+
         deathEffect.Play();
         deathEffect2.Play();
-        //Destroy(gameObject);
+
+        GameManager.Defeat();
     }
 }

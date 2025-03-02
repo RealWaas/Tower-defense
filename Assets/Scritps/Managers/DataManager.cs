@@ -21,14 +21,18 @@ public static class DataManager
         List<Vector2Int> savedPath = LoadListFromPlayerPrefs<Vector2Int>("savedPath");
         GridManager.SetGridPath(savedPath);
 
-        List<TurretData> savedTurrets = LoadListFromPlayerPrefs<TurretData>("savedTurrets");
+        List<TurretData> savedTurrets = LoadListFromPlayerPrefs<TurretData>("placedTurrets");
         PlacementManager.instance.LoadAllTurrets(savedTurrets);
+
+        List<TurretType> availableTurrets = LoadListFromPlayerPrefs<TurretType>("availableTurrets");
+        InventoryManager.LoadTurretList(availableTurrets);
+
 
         int currentWave = LoadDataFromPlayerPrefs<int>("waveIndex");
         WaveManager.instance.SetWaveIndex(currentWave);
 
         // Set Currency
-
+        CurrencyManager.instance.SetMoney(LoadDataFromPlayerPrefs<int>("money"));
 
         // Set Base HP
         float savedHP = LoadDataFromPlayerPrefs<float>("health");
@@ -43,9 +47,11 @@ public static class DataManager
         ClearPlayerPrefs();
         SaveDataToPlayerPrefs("saveCheck", true);
         SaveDataToPlayerPrefs("savedPath", GridManager.mainPath);
-        SaveDataToPlayerPrefs("savedTurrets", PlacementManager.instance.placedTurretList);
+        SaveDataToPlayerPrefs("placedTurrets", PlacementManager.instance.placedTurretList);
         SaveDataToPlayerPrefs("waveIndex", WaveManager.instance.currentWaveIndex);
         SaveDataToPlayerPrefs("health", MainBase.instance.GetHealth());
+        SaveDataToPlayerPrefs("money", CurrencyManager.instance.money);
+        SaveDataToPlayerPrefs("availableTurrets", InventoryManager.availableTurrets);
     }
     private static T LoadDataFromPlayerPrefs<T>(string _prefCategory)
     {

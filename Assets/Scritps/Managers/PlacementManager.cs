@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static GridManager;
 
@@ -25,28 +26,29 @@ public class PlacementManager : MonoBehaviour
     {
         instance = this;
 
-        GameManager.OnWaveStart += DeselectTurret;
-        UpgradeManager.OnUpgradeSelected += DeselectTurret;
+        GameManager.OnWaveStart += UnSelectInstance;
+        UpgradeManager.OnUpgradeSelected += UnSelectInstance;
     }
 
     private void OnDestroy()
     {
-        GameManager.OnWaveStart -= DeselectTurret;
-        UpgradeManager.OnUpgradeSelected -= DeselectTurret;
+        GameManager.OnWaveStart -= UnSelectInstance;
+        UpgradeManager.OnUpgradeSelected -= UnSelectInstance;
     }
 
-    public void DeselectTurret()
+    public void UnSelectInstance()
     {
         selectedPlacer = null;
         Destroy(turretInstance);
         turretInstance = null;
         selectedType = TurretType.None;
     }
-    public void SetSelectedTurret(TurretType _selectedType)
+
+    public void SetSelectedInstance(TurretType _selectedType)
     {
         if(selectedType == _selectedType)
         {
-            DeselectTurret();
+            UnSelectInstance();
             return;
         }
 
@@ -60,18 +62,19 @@ public class PlacementManager : MonoBehaviour
         GameObject turretPrefab = ItemDrawer.instance.GetTurretPrefab(selectedType, 0);
         
         turretInstance = Instantiate(turretPrefab);
-        turretInstance.GetComponent<TurretVisual>().SetVisualizerMaterial();
+        turretInstance.GetComponent<TurretVisual>().SetPlacementMaterial();
         
-        HideTurret();
+        HideTurretInstance();
     }
 
-    public void ShowTurret(TurretPlacer _placer)
+    public void ShowTurretInstance(TurretPlacer _placer)
     {
         selectedPlacer = _placer;
         turretInstance.SetActive(true);
         turretInstance.transform.position = _placer.transform.position;
     }
-    public void HideTurret()
+
+    public void HideTurretInstance()
     {
         selectedPlacer = null;
         turretInstance.SetActive(false);
@@ -79,12 +82,13 @@ public class PlacementManager : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.isInWave)
+        if (GameManager.isInWave || !GameManager.isAlive) // Cancel if not in preparation phase
             return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
+        // If the player is trying to place a turret
         if (turretInstance)
         {
             if (Physics.Raycast(ray, out hit, 50, placementMask))
@@ -96,14 +100,16 @@ public class PlacementManager : MonoBehaviour
 
                     if (_placer == selectedPlacer || _placer.hasTurret)
                         return;
-                    ShowTurret(_placer);
+                    ShowTurretInstance(_placer);
                     return;
                 }
             }
             if (selectedPlacer != null)
-                HideTurret();
+                HideTurretInstance();
         }
-        if (Input.GetMouseButtonDown(0))
+
+        // If no turret is beign placed, select one on click
+        else if (Input.GetMouseButtonDown(0))
         {
             if (Physics.Raycast(ray, out hit, 50, upgradeMask))
             {
@@ -115,9 +121,16 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Place a turret in the level an initialize it.
+    /// </summary>
     private void PlaceTurret()
     {
         TurretData newData = new TurretData(selectedType, selectedPlacer.placerPosition, 0);
+
+        TurretSO turretSO = ItemDrawer.instance.GetTurretSO(selectedType);
+
+        CurrencyManager.instance.RemoveMoney(turretSO.turretStats[0].upgradePrice);
 
         GameObject newTurret = Instantiate(turretMainPrefab);
         newTurret.transform.position = selectedPlacer.transform.position;
@@ -132,20 +145,53 @@ public class PlacementManager : MonoBehaviour
 
         selectedPlacer.SetTurret();
 
-        DeselectTurret();
+        UnSelectInstance();
     }
 
+    public void RemoveTurret(TurretData _turretData)
+    {
+        TurretMain turretMain = GetTurretMain(_turretData);
+
+        placedTurretList.Remove(_turretData);
+        placedTurretObjects.Remove(turretMain);
+
+        Destroy(turretMain.gameObject);
+
+        TurretPlacer turretPlacer = placerList.Where(e => { return e.placerPosition == _turretData.turretPos; }).First();
+
+        turretPlacer.SetTurret(false);
+    }
+
+    /// <summary>
+    /// Update the data of the upgraded Turret to match its current level.
+    /// </summary>
+    /// <param name="_turret"></param>
     public void UpdtateTurretLevel(TurretData _turret)
     {
         TurretData updatedTurret = new TurretData(_turret);
 
-        placedTurretList[GetIndexOfTurret(_turret)] = updatedTurret;
+        int turretIndex = GetIndexOfTurret(_turret);
+
+        // Remove upgrade price from Currency Manager
+        TurretSO turretSO = ItemDrawer.instance.GetTurretSO(_turret.turretType);
+
+        CurrencyManager.instance.RemoveMoney(turretSO.turretStats[_turret.turretLevel].upgradePrice);
+
+        placedTurretList[turretIndex] = updatedTurret;
     }
 
-    public TurretMain GetTurretMain(TurretData _turret)
-    {
-        return placedTurretObjects[GetIndexOfTurret(_turret)];
-    }
+    /// <summary>
+    /// Return the TurretMain relatif to the right Data.
+    /// </summary>
+    /// <param name="_turret"></param>
+    /// <returns></returns>
+    public TurretMain GetTurretMain(TurretData _turret) => placedTurretObjects[GetIndexOfTurret(_turret)];
+
+    /// <summary>
+    /// Get the index of a turret in the list of placedTurrets.
+    /// </summary>
+    /// <param name="_turret"></param>
+    /// <returns></returns>
     private int GetIndexOfTurret(TurretData _turret)
     {
         for (int turretIndex = 0; turretIndex <= placedTurretList.Count - 1; turretIndex++)
@@ -156,6 +202,10 @@ public class PlacementManager : MonoBehaviour
         return -1;
     }
 
+    /// <summary>
+    /// Load all turrets from a list in the level.
+    /// </summary>
+    /// <param name="_turretList"></param>
     public void LoadAllTurrets(List<TurretData> _turretList)
     {
         foreach(TurretData turret in _turretList)

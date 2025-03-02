@@ -7,5 +7,5 @@ public class TurretPlacer : MonoBehaviour
 
 
     public void SetPosition(Vector2Int _position) => placerPosition = _position;
-    public void SetTurret() => hasTurret = true;
+    public void SetTurret(bool _hasTurret = true) => hasTurret = _hasTurret;
 }

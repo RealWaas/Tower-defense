@@ -26,8 +26,7 @@ public class Laser : MonoBehaviour
                     damagable.TakeDamage(bulletStats.bulletDamage);
                     damageTimers[damagable] = Time.time;
                     
-                    // TODO
-                    //damagable.TakeSlow(bulletStats.bulletSpeed);
+                    damagable.TakeSlow(bulletStats.bulletSpeed);
                 }
             }
         }

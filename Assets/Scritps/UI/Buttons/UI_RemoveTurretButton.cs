@@ -26,6 +26,9 @@ public class UI_RemoveTurretButton : MonoBehaviour
 
     public void OnClick()
     {
+        if (!GameManager.isAlive)
+            return;
 
+        UpgradeManager.RemoveTurret();
     }
 }

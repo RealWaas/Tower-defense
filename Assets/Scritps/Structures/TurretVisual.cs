@@ -6,7 +6,8 @@ public class TurretVisual : MonoBehaviour
     [SerializeField] private List<MeshRenderer> turretRenderers = new List<MeshRenderer>();
 
     [SerializeField] private Material baseMaterial;
-    [SerializeField] private Material visualizerMaterial;
+    [SerializeField] private Material placementMaterial;
+    [SerializeField] private Material selectionMaterial;
 
     public void SetBaseMaterial()
     {
@@ -16,12 +17,19 @@ public class TurretVisual : MonoBehaviour
         }
     }
 
-    public void SetVisualizerMaterial()
+    public void SetPlacementMaterial()
     {
         foreach(MeshRenderer renderer in turretRenderers)
         {
-            renderer.material = visualizerMaterial;
+            renderer.material = placementMaterial;
         }
     }
 
+    public void SetSelectionMaterial()
+    {
+        foreach (MeshRenderer renderer in turretRenderers)
+        {
+            renderer.material = selectionMaterial;
+        }
+    }
 }
